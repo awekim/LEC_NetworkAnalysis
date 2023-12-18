@@ -1,15 +1,24 @@
+############################################
+### Network Analysis                   #####
+### Subject: Simple network analysis   #####
+### Developed by. KKIM                 #####
+############################################
+
+### Import packages
 library(dplyr)
 library(igraph)
 library(ggplot2)
 library(ggrepel)
 library(ggraph)
 
+### Load data
 marvel.edge <- read.csv("marvel-edges.csv")
 marvel.node <- read.csv("marvel-nodes.csv")
 
 marvel.node %>% head
 marvel.edge %>% head
 
+### Create igraph object
 marvel.graph <- 
   graph_from_data_frame(
     d = marvel.edge, 
@@ -17,7 +26,7 @@ marvel.graph <-
     directed = FALSE)
 marvel.graph
 
-# Measure Network indices
+### Measure Network indices
 marvel.graph.tbl <-
   data.frame(
     node = V(marvel.graph) %>% names,
@@ -26,7 +35,7 @@ marvel.graph.tbl <-
     clo = marvel.graph %>% closeness
   )
 
-# Deg-BTW table
+### Generate Deg-Btw figure
 marvel.graph.tbl %>%
   mutate(deg=log(deg+1)/max(log(deg+1)),
          bet=log(bet+1)/max(log(bet+1))) %>%
@@ -36,7 +45,7 @@ marvel.graph.tbl %>%
   geom_point() + 
   geom_label_repel(aes(label=node)) 
 
-# Network visualization
+### Generate network figure
 set.seed(1)
 marvel.graph %>%
   ggraph(layout = "auto") +
